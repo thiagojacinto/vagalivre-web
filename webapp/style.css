@@ -1,0 +1,98 @@
+/* * {
+  box-sizing: border-box;
+  font-family: "Avenir", "Helvetica", sans-serif;
+} */
+
+html {
+  box-sizing: border-box;
+  background: #8E24AA;
+  background: linear-gradient(45deg,  #dfc46c 0%,#d1a547 50%,#a1610d 100%);
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+  font-family: "Avenir", "Helvetica", sans-serif;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inconsolata', monospace;
+}
+
+header {
+  width: 100vw;
+  height: auto;
+  margin: 2% 0;
+  text-align: center;
+  font-size: 4vh;
+}
+
+.panel {
+  font-size: 2.5vh;
+  width: 80%;
+  margin: 3.5vh auto;
+}
+
+.mapContainer {
+  width: 80%;
+  margin: 0 auto;
+}
+
+#map {
+  height: 60vh;
+  width: 80vw;
+}
+
+/* Default table styles for this demo */
+table {
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+}
+table tr {
+  background: white;
+  border-bottom: 1px solid
+}
+table th, table td {
+  padding: 10px 20px;
+}
+table td span {
+  background: rgba(238, 238, 238, 0.918);
+  color: dimgrey;
+  display: none;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 5px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 0;
+  left: 0;
+}
+
+/* Simple CSS for flexbox table on mobile */
+@media(max-width: 800px) {
+  table thead {
+      left: -9999px;
+      position: absolute;
+      visibility: hidden;
+  }
+  table tr {
+      border-bottom: 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+  }
+  table td {
+      border: 1px solid;
+      margin: 0 -1px -1px 0;
+      padding-top: 35px;
+      position: relative;
+      width: 50%;
+  }
+  table td span {
+      display: block;
+  }
+}
