@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VagaLivre - Encontre seu lugar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <header>
+    <h1>VagaLivre</h1>
+    <span>Estacione de maneira rápida e eficaz</span>
+  </header>
+
+  <div class="panel">
+
+    <b>Selecione o estacionamento: </b>
+    <select id="end">
+
+      <option value="Blue Park Estacionamentos E Garagens - R. do Príncipe, 711 - Santo Amaro, Recife - PE, 50050-410">
+        Estaciotec</option>
+      <option value="R. Dom Bôsco, 961 - Boa Vista, Recife - PE, 50070-070">Estapar Dom Bosco</option>
+      <option value="R. das Fronteiras, 175 - Boa Vista, Recife - PE, 50070-170">Estapar Memorial</option>
+      <option value="Av. Frei Matias Tévis, 285 - Ilha do Leite, Recife - PE, 50070-450">NE Park Graham Bell</option>
+      <option value="Praça Miguel de Cervantes, 60 - Ilha do Leite, Recife - PE, 50000-000">Estapar Miguel Cervantes
+      </option>
+
+    </select>
+  </div>
+
+  <div class="mapContainer">
+    <div id="map"></div>
+  </div>
+
+  <div class="buttonsContainer">
+    <form method="GET">
+      <input class="getParking" type="submit" value="GET" />
+    </form>
+  </div>
+
+  <div class="locationsFound">
+    
+  </div>
+
+  <script src="script.js"></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvPpbww4ey3M2FgjKXM0-s913upcp_klU&callback=initMap">
+    </script>
+</body>
+
+</html>
