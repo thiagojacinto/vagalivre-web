@@ -29,7 +29,6 @@ function initMap() {
   document.getElementById('end').addEventListener('change', onChangeHandler);
 }
 
-
 // Icon to parking
 const parkingIcon = 'http://maps.google.com/mapfiles/kml/shapes/cabs.png';
 
@@ -60,7 +59,7 @@ async function CheckError(response) {
 }
 
 // GET Method function
-async function getData(url = '') { //, data = {}) {
+async function getData(url = '', callback) { //, data = {}) {
   // Default options are marked with *
   const response = fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -78,13 +77,16 @@ async function getData(url = '') { //, data = {}) {
         })
     );
   // return null;
-  response  
+  response
     .then(data => {
       // copying data and pushing it into 'foundAll' array
       data.results.forEach(element => {
         foundAll.push(element);
       });
+      // after 'foundAll' is complete, callback the function
+      callback && callback(foundAll);
     });
+  
 }
 
 // Auxiliary to Use GET Method promise
@@ -94,10 +96,7 @@ function tryToFindAll() {
 
     // SUPPORTED TYPES for Place API 'Nearby': https://developers.google.com/places/web-service/supported_types
 
-    return getData('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=AIzaSyAvPpbww4ey3M2FgjKXM0-s913upcp_klU');
-
-
-    // console.log(JSON.stringify(dataFromGet)); // JSON-string from `response.json()` call    
+    return getData('https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=AIzaSyAvPpbww4ey3M2FgjKXM0-s913upcp_klU', organizeFoundPlaces);  
 
   } catch (error) {
     console.error(error);
@@ -117,10 +116,11 @@ function calculateVacancy() {
   -> The results will be displayed as a table
   -> Create a table row with info from every 'foundAll' array`s item
 */
-function organizeFoundPlaces(foundAll) {
+function organizeFoundPlaces(listOfPlaces) {
+
   // Only creates if there are valid results (NOT null)
   //  OBS: array will be at postion 0 of foundAll
-  if (foundAll.length != 0) {
+  if (listOfPlaces.length != 0) {
 
     // Header of the table
     locationsDiv.innerHTML = `
@@ -139,52 +139,60 @@ function organizeFoundPlaces(foundAll) {
     const locationsTable = document.querySelector('.locationsTable');
 
     // Analize every item in 'foundPlaces' array
-    for (let i = 0; i < foundAll.length; i++) {
+    for (let i = 0; i < listOfPlaces.length; i++) {
       // Create a <tr> node
       let row = document.createElement("TR");
 
       // Important data from 'foundAll' elements:
-      keyDataPoints[i] = [ 
-        foundAll[i].name, 
-        foundAll[i].vicinity, 
-        foundAll[i].rating, 
-        foundAll[i].opening_hours != undefined ? (foundAll[i].opening_hours ? 'Aberto' : 'Fechado') : 'N.I.',
+      keyDataPoints[i] = [
+        listOfPlaces[i].name,
+        listOfPlaces[i].vicinity,
+        listOfPlaces[i].rating,
+        listOfPlaces[i].opening_hours != undefined ? (listOfPlaces[i].opening_hours ? 'Aberto' : 'Fechado') : 'N.I.',
         calculateVacancy(), // spaceholder to free parking spaces counting
-        foundAll[i].geometry.location, 
-        foundAll[i].place_id ];
+        listOfPlaces[i].geometry.location,
+        listOfPlaces[i].place_id
+      ];
 
-      // columns data
-      for (let j = 0; j < 5; j++) { // Final will be 4, keeping 'keyDataPoints's order: name, address, rating, opennow
+      // columns info
+      for (let j = 0; j < 5; j++) { // Final will be 5, keeping 'keyDataPoints's order: name, address, rating, opennow
+      // TABLE ORDER
         // Then, create a <th>  
-        var column = document.createElement("TD")
+        var column = document.createElement("TD");
         // Create a text node
         var insideContent = document.createTextNode(`${keyDataPoints[i][j]}`);
         // Append the text to <li>
         column.appendChild(insideContent);
         // Insert a column inside a row element. 
         row.appendChild(column)
-      }
-      // Then append it to a locationsDiv
-      locationsTable.appendChild(row)
-      
     }
+    // Then append it to a locationsDiv
+    locationsTable.appendChild(row)
 
-    // Closes the table
-    // locationsDiv.appendChild(`</table>`);
+      // SELECT, OPTION
+      let selection = document.querySelector('#end');
+      // Create an <option> 
+      var option = document.createElement("OPTION");
+      // Set the displayed name
+      option.setAttribute('textContent', `${keyDataPoints[i][0]}`);
+      // Create a text node for it
+      var insideOptionContent = document.createTextNode(`${keyDataPoints[i][1]}`);
+      option.appendChild(insideOptionContent);
+      selection.appendChild(option);
+  }
 
   } else {
     // list of places is null
-    locationsDiv.innerHTML = `<span>${notFoundAlert}</span>`;
+    locationsDiv.innerHTML = `<span class=locationsTable>${notFoundAlert}</span>`;
   }
 }
 
 // Get element from html
-const getButton = document.querySelector('.getParking');
+const getButton = document.querySelector('.getParkingLot');
+
 // Event listener
-getButton.addEventListener('click', e => {
+getButton.addEventListener('click', (e) => {
   // console.log(e);  // Verify event
   e.preventDefault();
-  tryToFindAll(() => organizeFoundPlaces(foundAll));
+  tryToFindAll();
 });
-
-// Run 'organize' when finishes loading
