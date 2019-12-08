@@ -96,7 +96,7 @@ function tryToFindAll() {
 
     // SUPPORTED TYPES for Place API 'Nearby': https://developers.google.com/places/web-service/supported_types
 
-    return getData('https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=AIzaSyAvPpbww4ey3M2FgjKXM0-s913upcp_klU', organizeFoundPlaces);  
+    return getData('https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=YOR_KEY_HERE', organizeFoundPlaces);  
 
   } catch (error) {
     console.error(error);
