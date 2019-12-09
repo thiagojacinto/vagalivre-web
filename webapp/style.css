@@ -1,8 +1,3 @@
-/* * {
-  box-sizing: border-box;
-  font-family: "Avenir", "Helvetica", sans-serif;
-} */
-
 html {
   box-sizing: border-box;
   background: #8E24AA;
@@ -15,7 +10,7 @@ html {
 }
 
 body {
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Inconsolata', monospace;
@@ -26,13 +21,13 @@ header {
   height: auto;
   margin: 2% 0;
   text-align: center;
-  font-size: 4vh;
+  font-size: 3vh;
 }
 
 .panel {
   font-size: 2.5vh;
   width: 80%;
-  margin: 3.5vh auto;
+  margin: 2vh auto;
 }
 
 .mapContainer {
@@ -41,15 +36,40 @@ header {
 }
 
 #map {
-  height: 60vh;
+  height: 30vh;
   width: 80vw;
 }
 
-/* Default table styles for this demo */
+buttonsContainer {
+  width: 80%;
+  height: 2.5vh;
+  margin: 0 auto;
+  align-content: center;
+}
+
+button {
+  width: 80%;
+  margin: 1.5vh 10vw;
+  padding: 1vh 0;
+  font-size: 3vh;
+}
+
+.locationsFound {
+  width: 80%;
+  margin: 20px auto;
+}
+
+img.app-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Default table styles for this TABLE */
 table {
   border-collapse: collapse;
   text-align: left;
-  width: 100%;
+  width: 80%;
+  margin: 0 auto;
 }
 table tr {
   background: white;
@@ -64,6 +84,7 @@ table td span {
   display: none;
   font-size: 10px;
   font-weight: bold;
+  margin: inherit;
   padding: 5px;
   position: absolute;
   text-transform: uppercase;
@@ -71,8 +92,8 @@ table td span {
   left: 0;
 }
 
-/* Simple CSS for flexbox table on mobile */
-@media(max-width: 800px) {
+/* Simple CSS for flexbox TABLE on mobile */
+@media(max-width: 500px) {
   table thead {
       left: -9999px;
       position: absolute;
@@ -83,12 +104,12 @@ table td span {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      margin-bottom: 40px;
+      margin-bottom: 15px;
   }
   table td {
       border: 1px solid;
       margin: 0 -1px -1px 0;
-      padding-top: 35px;
+      padding-top: 15px;
       position: relative;
       width: 50%;
   }
