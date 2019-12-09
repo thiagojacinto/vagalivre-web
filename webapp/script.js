@@ -2,7 +2,10 @@
 var foundAll = [];
 var keyDataPoints = [];
 
-const notFoundAlert = 'Desculpe. Nenhum estacionamento encontrado por perto :('
+const interestingInfo = 5;
+const notFoundAlert = 'Desculpe. Nenhum estacionamento encontrado por perto :(';
+
+https://www.google.com/maps/dir/?api=1&destination=
 
 // Initiliaze Map API
 function initMap() {
@@ -28,10 +31,7 @@ function initMap() {
   // document.getElementById('start').addEventListener('change', onChangeHandler);  // O início vai ser fixo = UNIT
   document.getElementById('end').addEventListener('change', onChangeHandler);
 }
-
-// Icon to parking
-const parkingIcon = 'http://maps.google.com/mapfiles/kml/shapes/cabs.png';
-
+// Using Direction API (Service and Display)
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
   directionsService.route({
@@ -86,7 +86,7 @@ async function getData(url = '', callback) { //, data = {}) {
       // after 'foundAll' is complete, callback the function
       callback && callback(foundAll);
     });
-  
+
 }
 
 // Auxiliary to Use GET Method promise
@@ -96,7 +96,7 @@ function tryToFindAll() {
 
     // SUPPORTED TYPES for Place API 'Nearby': https://developers.google.com/places/web-service/supported_types
 
-    return getData('https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=YOR_KEY_HERE', organizeFoundPlaces);  
+    return getData('https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-8.060726,-34.891307&rankby=distance&type=parking&keyword=estacionamento&key=YOUR_KEY_HERE', organizeFoundPlaces);
 
   } catch (error) {
     console.error(error);
@@ -131,6 +131,7 @@ function organizeFoundPlaces(listOfPlaces) {
         <th>Nota</th>
         <th>Aberto agora?</th>
         <th>Vagas</th>
+        <th>Iniciar trajeto</th>
       </tr>
     </table>
     `;
@@ -154,37 +155,80 @@ function organizeFoundPlaces(listOfPlaces) {
         listOfPlaces[i].place_id
       ];
 
-      // columns info
-      for (let j = 0; j < 5; j++) { // Final will be 5, keeping 'keyDataPoints's order: name, address, rating, opennow
-      // TABLE ORDER
-        // Then, create a <th>  
-        var column = document.createElement("TD");
-        // Create a text node
-        var insideContent = document.createTextNode(`${keyDataPoints[i][j]}`);
-        // Append the text to <li>
-        column.appendChild(insideContent);
-        // Insert a column inside a row element. 
-        row.appendChild(column)
+      // Verify quantity of FREE PARKING SPACES
+      // -> Only show options with free spaces > 0:
+      if (keyDataPoints[i][4] > 0) {
+
+        // Populate columns with info from the points
+        for (let j = 0; j < interestingInfo; j++) { // Final will be 'interestingInfo', keeping 'keyDataPoints's order: name, address, userRating, opennow
+          // TABLE ORDER
+          // Then, create a <th>  
+          var column = document.createElement("TD");
+          // Create a text node
+          var insideContent = document.createTextNode(`${keyDataPoints[i][j]}`);
+          // Append the text to <li>
+          column.appendChild(insideContent);
+          // Insert a column inside a row element. 
+          row.appendChild(column)
+        }
+
+        // Direction links
+        // Creates a links column data, using the same logic:
+        var linksColumn = document.createElement("TD");
+
+        // for Google Maps:
+        var googleMapsLink = document.createElement("A");
+        // set 'href' attribute of new <a> created
+        googleMapsLink.setAttribute('href', `https://www.google.com/maps/dir/?api=1&destination=${keyDataPoints[i][5].lat},${keyDataPoints[i][5].lng}`);
+        // // name of the link:
+        // var insideGoogleMapsName = document.createTextNode("Google Maps");
+        // add a image/icon
+        var googleMapsIcon = document.createElement("IMG");
+        googleMapsIcon.setAttribute('src', 'img/googleMaps.png');
+        googleMapsIcon.setAttribute('alt', 'Google Maps Icon');
+        googleMapsIcon.setAttribute('class', 'app-icon');
+
+        googleMapsLink.appendChild(googleMapsIcon);
+
+        // then add it to the column
+        linksColumn.appendChild(googleMapsLink);
+
+        // for Apple Maps:
+        var appleMapsLink = document.createElement("A");
+        appleMapsLink.setAttribute('href', `http://maps.apple.com/?daddr=${keyDataPoints[i][5].lat},${keyDataPoints[i][5].lng}&dirflg=d&t=h`);
+        // var insideAppleMapsName = document.createTextNode("Apple Maps");
+        // add a image/icon
+        var appleMapsIcon = document.createElement("IMG");
+        appleMapsIcon.setAttribute('src', 'img/appleMaps.png');
+        appleMapsIcon.setAttribute('alt', 'Apple Maps Icon');
+        appleMapsIcon.setAttribute('class', 'app-icon');
+
+        appleMapsLink.appendChild(appleMapsIcon);
+        linksColumn.appendChild(appleMapsLink);
+
+        // Adds to the row
+        row.appendChild(linksColumn);
+
+        // Then append it to a locationsDiv
+        locationsTable.appendChild(row)
+
+        // SELECT, OPTION
+        let selection = document.querySelector('#end');
+        // Create an <option> 
+        var option = document.createElement("OPTION");
+        // Set the value with the address
+        option.setAttribute('value', `${keyDataPoints[i][1]}`);
+        // Create a text node for it, with the name of the place
+        var insideOptionContent = document.createTextNode(`${keyDataPoints[i][0]}`);
+        option.appendChild(insideOptionContent);
+        selection.appendChild(option);
+      }
     }
-    // Then append it to a locationsDiv
-    locationsTable.appendChild(row)
-
-      // SELECT, OPTION
-      let selection = document.querySelector('#end');
-      // Create an <option> 
-      var option = document.createElement("OPTION");
-      // Set the displayed name
-      option.setAttribute('textContent', `${keyDataPoints[i][0]}`);
-      // Create a text node for it
-      var insideOptionContent = document.createTextNode(`${keyDataPoints[i][1]}`);
-      option.appendChild(insideOptionContent);
-      selection.appendChild(option);
-  }
-
-  } else {
-    // list of places is null
-    locationsDiv.innerHTML = `<span class=locationsTable>${notFoundAlert}</span>`;
-  }
+  
+    } else {
+      // list of places is null
+      locationsDiv.innerHTML = `<span class=locationsTable>${notFoundAlert}</span>`;
+    }
 }
 
 // Get element from html
