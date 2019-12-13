@@ -48,6 +48,57 @@ h1.logo-container {
   margin: 2vh auto;
 }
 
+.getParkingLot {
+  background: linear-gradient(-45deg, #cef3b6, #56f799, #62f075, #78f1bf);
+	background-size: 400% 400%;
+  animation: gradientBG 2.5s ease infinite;
+}
+/*  Button animation */
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@-webkit-keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@-moz-keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@-o-keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
 .mapContainer {
   width: 80%;
   margin: 0 auto;
