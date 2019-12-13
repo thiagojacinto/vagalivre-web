@@ -4,7 +4,7 @@ Draft for an app idea, part of post-grad course 'Software Programming for Work -
 
 ### Live Demo: https://vagalivre.herokuapp.com
 
-## Using <project_name>
+## Using 'VagaLivre'
 
 To use 'VagaLivre', clone this repository then follow these steps on terminal:
 ```shell
