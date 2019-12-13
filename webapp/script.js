@@ -1,8 +1,8 @@
 // CONSTANTS AND VARIABLES
 var foundAll = [];
 var keyDataPoints = [];
-
-const interestingInfo = 5;
+// Info gathared from 'keyDataPoints' and displayed to user
+const interestingInfo = 2;
 const notFoundAlert = 'Desculpe. Nenhum estacionamento encontrado por perto :(';
 
 https://www.google.com/maps/dir/?api=1&destination=
@@ -112,11 +112,61 @@ function calculateVacancy() {
   return Math.floor(Math.random() * 10);
 }
 
+// Function to show hidden selection div
+function selectionHandler(selection) {
+  if (selection.style.display === '') {
+    selection.classList.replace('hidden-panel','showing-panel');
+  }
+}
+
+// Return 'data-label' attribute to every row in table
+function selectDataLabel(key) {
+  switch (key) {
+    case 0:
+      return 'Nome';
+    case 1:
+      return 'Aberto agora?';
+    case 2:
+      return 'Vagas';
+    case 3: 
+      return 'Iniciar trajeto'; 
+    default:
+      '';
+      break;
+  }
+}
+
+// Animate 'Procurar' bar
+function animateBar(bar) {
+  let firstDiv = document.createElement("DIV");
+  firstDiv.classList.add('lds-ripple');
+  let newDiv = document.createElement("DIV");
+  let anotherDiv = document.createElement("DIV");
+  // Append two divs like newDiv
+  firstDiv.appendChild(newDiv);
+  firstDiv.appendChild(anotherDiv);
+  bar.appendChild(firstDiv);
+  console.log("ANIMATION OK!"); // Verify
+  
+}
+
 /* Deal with data after places were found:
   -> The results will be displayed as a table
   -> Create a table row with info from every 'foundAll' array`s item
 */
 function organizeFoundPlaces(listOfPlaces) {
+
+  // Show selection 'panel' 
+  const selection = document.querySelector('#selection');
+  selectionHandler(selection);
+
+  // Animate the 'Procurar vaga' bar:
+  const putAnimatedLoading = document.querySelector('.getParkingLot');
+  // Then, change button name AND put animation
+  putAnimatedLoading.textContent = 'PROCURANDO ';
+  // and add the animations to it
+  animateBar(putAnimatedLoading);
+    
 
   // Only creates if there are valid results (NOT null)
   //  OBS: array will be at postion 0 of foundAll
@@ -125,19 +175,20 @@ function organizeFoundPlaces(listOfPlaces) {
     // Header of the table
     locationsDiv.innerHTML = `
     <table class="locationsTable">
-      <tr>
+      <tbody class="responses"> 
+      <tr class="table-head">
         <th>Nome</th>
-        <th>Enderenço</th>
-        <th>Nota</th>
         <th>Aberto agora?</th>
         <th>Vagas</th>
         <th>Iniciar trajeto</th>
       </tr>
+      </tbody>
     </table>
     `;
+    // REMOVED: <th>Enderenço</th> <th>Nota</th>
 
     // Get the newly created HTML element 'table'
-    const locationsTable = document.querySelector('.locationsTable');
+    const locationsTable = document.querySelector('.responses');
 
     // Analize every item in 'foundPlaces' array
     for (let i = 0; i < listOfPlaces.length; i++) {
@@ -147,23 +198,27 @@ function organizeFoundPlaces(listOfPlaces) {
       // Important data from 'foundAll' elements:
       keyDataPoints[i] = [
         listOfPlaces[i].name,
-        listOfPlaces[i].vicinity,
-        listOfPlaces[i].rating,
+        // listOfPlaces[i].vicinity,
+        // listOfPlaces[i].rating,
         listOfPlaces[i].opening_hours != undefined ? (listOfPlaces[i].opening_hours ? 'Aberto' : 'Fechado') : 'N.I.',
         calculateVacancy(), // spaceholder to free parking spaces counting
         listOfPlaces[i].geometry.location,
-        listOfPlaces[i].place_id
+        listOfPlaces[i].place_id,
+        listOfPlaces[i].vicinity
       ];
 
       // Verify quantity of FREE PARKING SPACES
       // -> Only show options with free spaces > 0:
-      if (keyDataPoints[i][4] > 0) {
+      if (keyDataPoints[i][2] > 0) {
 
         // Populate columns with info from the points
-        for (let j = 0; j < interestingInfo; j++) { // Final will be 'interestingInfo', keeping 'keyDataPoints's order: name, address, userRating, opennow
+        for (let j = 0; j <= interestingInfo; j++) { // Final will be 'interestingInfo', keeping 'keyDataPoints's order: name, address, userRating, opennow
           // TABLE ORDER
           // Then, create a <th>  
           var column = document.createElement("TD");
+          // create 'data-label' attribute
+          column.setAttribute('data-label', selectDataLabel(j));
+          
           // Create a text node
           var insideContent = document.createTextNode(`${keyDataPoints[i][j]}`);
           // Append the text to <li>
@@ -175,11 +230,11 @@ function organizeFoundPlaces(listOfPlaces) {
         // Direction links
         // Creates a links column data, using the same logic:
         var linksColumn = document.createElement("TD");
-
+        linksColumn.setAttribute('data-label', selectDataLabel(3));
         // for Google Maps:
         var googleMapsLink = document.createElement("A");
         // set 'href' attribute of new <a> created
-        googleMapsLink.setAttribute('href', `https://www.google.com/maps/dir/?api=1&destination=${keyDataPoints[i][5].lat},${keyDataPoints[i][5].lng}`);
+        googleMapsLink.setAttribute('href', `https://www.google.com/maps/dir/?api=1&destination=${keyDataPoints[i][3].lat},${keyDataPoints[i][3].lng}`);
         // // name of the link:
         // var insideGoogleMapsName = document.createTextNode("Google Maps");
         // add a image/icon
@@ -193,10 +248,26 @@ function organizeFoundPlaces(listOfPlaces) {
         // then add it to the column
         linksColumn.appendChild(googleMapsLink);
 
+        // for Waze Maps:
+        var wazeLink = document.createElement("A");
+        // set 'href' attribute of new <a> created
+        wazeLink.setAttribute('href', `https://www.waze.com/ul?ll=${keyDataPoints[i][3].lat}%2C${keyDataPoints[i][3].lng}&navigate=yes&zoom=17`);
+      
+        // add a image/icon
+        var wazeIcon = document.createElement("IMG");
+        wazeIcon.setAttribute('src', 'img/waze.png');
+        wazeIcon.setAttribute('alt', 'Waze Icon');
+        wazeIcon.setAttribute('class', 'app-icon');
+
+        wazeLink.appendChild(wazeIcon);
+
+        // then add it to the column
+        linksColumn.appendChild(wazeLink);
+
         // for Apple Maps:
         var appleMapsLink = document.createElement("A");
-        appleMapsLink.setAttribute('href', `http://maps.apple.com/?daddr=${keyDataPoints[i][5].lat},${keyDataPoints[i][5].lng}&dirflg=d&t=h`);
-        // var insideAppleMapsName = document.createTextNode("Apple Maps");
+        appleMapsLink.setAttribute('href', `http://maps.apple.com/?daddr=${keyDataPoints[i][3].lat},${keyDataPoints[i][3].lng}&dirflg=d&t=h`);
+        
         // add a image/icon
         var appleMapsIcon = document.createElement("IMG");
         appleMapsIcon.setAttribute('src', 'img/appleMaps.png');
@@ -217,7 +288,7 @@ function organizeFoundPlaces(listOfPlaces) {
         // Create an <option> 
         var option = document.createElement("OPTION");
         // Set the value with the address
-        option.setAttribute('value', `${keyDataPoints[i][1]}`);
+        option.setAttribute('value', `${keyDataPoints[i][5]}`);
         // Create a text node for it, with the name of the place
         var insideOptionContent = document.createTextNode(`${keyDataPoints[i][0]}`);
         option.appendChild(insideOptionContent);
