@@ -1,4 +1,5 @@
 # VagaLivre
+<img align="center" alt="Vagalivre logo" src="https://github.com/thiagojacinto/vagalivre-web/blob/master/webapp/favicon/android-chrome-192x192.png">
 Draft for an app idea, part of post-grad course 'Software Programming for Work - UNIT / Porto Digital'
 
 ### Live Demo: https://vagalivre.herokuapp.com
