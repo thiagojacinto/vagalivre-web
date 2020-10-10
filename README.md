@@ -2,8 +2,6 @@
 <img align="center" alt="Vagalivre logo" src="https://github.com/thiagojacinto/vagalivre-web/blob/master/webapp/favicon/android-chrome-192x192.png">
 Draft for an app idea, part of post-grad course 'Software Programming for Work - UNIT / Porto Digital'
 
-### Live Demo: https://vagalivre.herokuapp.com
-
 ## Using 'VagaLivre'
 
 To use 'VagaLivre', clone this repository then follow these steps on terminal:
@@ -16,7 +14,7 @@ npm start
 ```
 Now you could navigate to `index.html` on your prefered browser.
 
-If you choose to use the [live demo](https://vagalivre.herokuapp.com), maybe it will not work because its Google Maps API Key will be invalid.
+If you choose to use the _live demo_ (not available), maybe it will not work because its Google Maps API Key will be invalid.
 
 In any case, will be great if you follow [these steps](https://developers.google.com/maps/documentation/javascript/get-api-key) to create your own API Key to use this solution, with Google Maps API's.
 
